@@ -11,10 +11,6 @@ namespace bots\request;
 
 class Bot
 {
-    public static function waitingExchangeBot () {
-
-        
-    }
 
     public static function startBot ($bot_id) {
     }

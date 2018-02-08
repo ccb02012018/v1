@@ -15,7 +15,7 @@ use common\models\api\impl\Api;
 use common\models\bot\Bot;
 use common\models\constant\TypeBot;
 use common\models\constant\TypeCandlestick;
-use common\models\DateUtil;
+use common\models\utils\DateUtil;
 use common\models\Logger;
 
 class SyncBot extends \Thread
@@ -156,6 +156,7 @@ class SyncBot extends \Thread
      * @param Api $api
      * @param TypeCandlestick $typeCandlestick
      * @param integer $timePlus
+     *
      *
      * @throws \Exception
      * @internal param Account $account

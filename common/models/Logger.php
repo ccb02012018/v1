@@ -15,13 +15,13 @@ class Logger {
 	public static function writeException (\Exception $e) {
 		$fecha = date_create();
 		$log = new Log();
-		$log->log_message = date_format($fecha, 'Y-m-d H:i:s') . ' ' . $e->getMessage();
+		$log->log_message = $e->getMessage();
 		$log->save();
 	}
 	public static function writeLog ($message) {
 		$fecha = date_create();
 		$log = new Log();
-		$log->log_message = date_format($fecha, 'Y-m-d H:i:s') . ' ' . $message;
+		$log->log_message = $message;
 		$log->save();
 	}
 }

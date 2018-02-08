@@ -10,7 +10,7 @@ namespace common\models\bots;
 
 use common\models\account\Exchange;
 use common\models\bot\Bot;
-use common\models\DateUtil;
+use common\models\utils\DateUtil;
 use common\models\Logger;
 
 class ExchangeBot extends \Worker

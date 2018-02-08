@@ -6,7 +6,7 @@
  * Time: 9:36 PM
  */
 
-namespace common\models;
+namespace common\models\utils;
 
 class DateUtil
 {
@@ -17,6 +17,11 @@ class DateUtil
     {
         $fecha = date_create();
         return date_format($fecha, 'U');
+    }
+
+    public static function getDateTime() {
+        $fecha = date_create();
+        return date_format($fecha, 'Y-m-d H:i:s');
     }
 
 }

@@ -8,6 +8,7 @@
 
 namespace console\controllers;
 
+use bots\ExchangeBot;
 use yii\console\Controller;
 
 class BotController extends Controller
@@ -31,8 +32,10 @@ class BotController extends Controller
 
     public function actionCorrerBot()
     {
-        //$worker = new ExchangeBot();
-        //$worker->start();
-        echo 'terminadoooo';
+
+        require_once(__DIR__ . '/../../bots/ExchangeBot.php');
+        $worker = new ExchangeBot();
+        $worker->start();
+        //echo 'terminadoooo';
     }
 }
