@@ -2,8 +2,10 @@
 
 namespace api\controllers;
 
+use common\custom\CArrayHelper;
 use common\models\ApiResult;
 use common\models\log\Log;
+use common\models\Logger;
 use yii\rest\ActiveController;
 
 /**
@@ -12,7 +14,6 @@ use yii\rest\ActiveController;
 class LogController extends ActiveController
 {
     public $modelClass = 'common\models\log\Log';
-
 
     public function actions()
     {
@@ -23,12 +24,18 @@ class LogController extends ActiveController
 
     public function actionCreate()
     {
-        $log = new Log();
-        $log->log_message = \Yii::$app->request->post('log_message');
-        $log->save();
-
-        return (new ApiResult($log->attributes))->getResponse();
+        try {
+            $log = new Log(\Yii::$app->request->post('log_bot_ins_id'), \Yii::$app->request->post('log_message'));
+            if (!$log->validate()) {
+                Logger::writeFileLog(CArrayHelper::toString($log->getErrors()));
+            } else {
+                $log->save();
+            }
+            return (new ApiResult($log->attributes))->getResponse();
+        } catch (\Exception $exception) {
+            Logger::writeExceptionFileLog($exception);
+            return (new ApiResult(-1, 1, $exception->getMessage()))->getResponse();
+        }
     }
-
 
 }

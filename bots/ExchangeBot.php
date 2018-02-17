@@ -27,6 +27,10 @@ class ExchangeBot extends \Worker
     /**
      * @var int
      */
+    private $bot_ins_id;
+    /**
+     * @var int
+     */
     protected $exchange_id;
 
     /**
@@ -35,20 +39,25 @@ class ExchangeBot extends \Worker
     public function run()
     {
         try {
-            LogService::writeSimpleLog('Comienza Bot exchange');
+            //LogService::writeSimpleLog('Comienza Bot exchange');
 
             $this->bot_id = BotService::waitingExchangeBot();
 
             if ($this->bot_id == null) {
-                LogService::writeSimpleLog('Sin bot exchange');
+                error_log('Sin bot exchange');
                 return;
             }
 
             $lastWakeUp = DateUtil::getLocalTime();
-            $seconds = BotService::startBot($this->bot_id);
+            $startBtot = BotService::startBot($this->bot_id);
+            if ($startBtot == null) {
+                return;
+            }
+            $seconds = $startBtot['seconds'];
+            $this->bot_ins_id = $startBtot['bot_ins_id'];
 
             if ($seconds == -1) {
-                LogService::writeSimpleLog('Sin segundos');
+                error_log('Sin segundos');
                 return;
             }
 
@@ -61,20 +70,25 @@ class ExchangeBot extends \Worker
                     continue;
                 }
 
-                if (!BotService::esValido($this->bot_id)) {
+                if (!BotService::esValido($this->bot_id, $this->bot_ins_id)) {
                     break;
                 }
 
-                $lastWakeUp = BotService::wait($this->bot_id, $lastWakeUp);
+                $lastWakeUp = BotService::wait($this->bot_id, $this->bot_ins_id, $lastWakeUp);
+                if ($lastWakeUp == null) {
+                    break;
+                }
                 $i++;
-            } while ($i < 500);
+            } while ($i < 2);
         } catch (\Exception $e) {
-            LogService::writeSimpleLog($e->getMessage());
+            error_log($e->getMessage());
         } catch (\Throwable $e) {
-            LogService::writeSimpleLog($e->getMessage());
+            error_log($e->getMessage());
         }
-        BotService::stop($this->bot_id);
-        LogService::writeSimpleLog('Finaliza bot ' . $this->bot_id);
+
+        BotService::stop($this->bot_id, $this->bot_ins_id);
+
+        LogService::writeSimpleLog($this->bot_ins_id, 'Finaliza bot ' . $this->bot_id);
     }
 
     private function findSyncBot(&$sync)

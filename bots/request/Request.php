@@ -17,6 +17,7 @@ class Request
     public static function request($url, $data = [], $method = 'GET')
     {
         try {
+            var_dump($url);
             $options = array(
                 'http' => array(
                     'header' => "Content-type: application/x-www-form-urlencoded\r\n",
@@ -31,12 +32,13 @@ class Request
             $response->setResponse(json_decode($result, true));
 
             if ($response->result === false || $response->error != -1) {
+                var_dump('Error: ' . $response->errorMessage);
                 return false;
             }
 
             return ($response->result);
         } catch (\Exception $exception) {
-            var_dump('zxczxczxc');
+            var_dump('kuek!');
         }
     }
 

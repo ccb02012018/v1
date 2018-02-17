@@ -24,28 +24,33 @@ class BotService extends Request
      */
     public static function startBot($bot_id)
     {
-        $seconds = self::request('bot/start-bot', ['bot_id' => $bot_id], 'POST');
+        // ['seconds' => $seconds, 'bot_ins_id' => $botInstance->bot_ins_id]
+        $result = self::request('bot/start-bot', ['bot_id' => $bot_id], 'POST');
 
-        if ($seconds === false) {
-            return -1;
+        if ($result === false) {
+            return null;
         }
-        return $seconds;
+
+        return $result;
     }
 
-    public static function esValido($bot_id)
+    public static function esValido($bot_id, $bot_ins_id)
     {
-        self::request('bot/es-valido', ['bot_id' => $bot_id]);
+        return self::request('bot/es-valido', ['bot_id' => $bot_id, 'bot_ins_id' => $bot_ins_id]);
     }
 
-    public static function stop($bot_id)
+    public static function stop($bot_id, $bot_ins_id)
     {
-        self::request('bot/stop', ['bot_id' => $bot_id]);
+        return self::request('bot/stop', ['bot_id' => $bot_id, 'bot_ins_id' => $bot_ins_id], 'POST');
     }
 
-    public static function wait($bot_id, $lastWakeUp)
+    public static function wait($bot_id, $bot_ins_id, $lastWakeUp)
     {
-        $tmpLastWakeUp = self::sleep($bot_id, $lastWakeUp);
-        self::wakeUp($bot_id);
+        $tmpLastWakeUp = self::sleep($bot_id, $bot_ins_id, $lastWakeUp);
+        if ($tmpLastWakeUp == null) {
+            return null;
+        }
+        self::wakeUp($bot_id, $bot_ins_id);
         return $tmpLastWakeUp;
     }
 
@@ -56,12 +61,16 @@ class BotService extends Request
 
     /**
      * @param $bot_id int
+     * @param $bot_ins_id int
      * @param $lastWakeUp int
      * @return int
      */
-    private function sleep($bot_id, $lastWakeUp)
+    private static function sleep($bot_id, $bot_ins_id, $lastWakeUp)
     {
-        $seconds = self::request('bot/sleep', ['bot_id' => $bot_id]);
+        $seconds = self::request('bot/sleep', ['bot_id' => $bot_id, 'bot_ins_id' => $bot_ins_id], 'POST');
+        if ($seconds === false) {
+            return null;
+        }
         $tmpLastWakeUp = $lastWakeUp + $seconds;
         time_sleep_until($tmpLastWakeUp);
         return $tmpLastWakeUp;
@@ -70,8 +79,8 @@ class BotService extends Request
     /**
      * @param $bot_id
      */
-    private function wakeUp($bot_id)
+    private static function wakeUp($bot_id, $bot_ins_id)
     {
-        self::request('bot/wake-up', ['bot_id' => $bot_id]);
+        self::request('bot/wake-up', ['bot_id' => $bot_id, 'bot_ins_id' => $bot_ins_id], 'POST');
     }
 }

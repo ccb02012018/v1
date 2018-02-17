@@ -32,6 +32,7 @@ use Yii;
  * @property Exchange $exchange
  * @property TypeBot $typeBot
  * @property TypeCandlestick $typeCandlestick
+ * @property BotInstance[] $botInstances
  */
 class Bot extends \yii\db\ActiveRecord
 {
@@ -76,18 +77,18 @@ class Bot extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'bot_id' => Yii::t('common', 'Bot ID'),
-            'bot_name' => Yii::t('common', 'Bot Name'),
-            'bot_exc_id' => Yii::t('common', 'Bot Exc ID'),
-            'bot_last_update' => Yii::t('common', 'Bot Last Update'),
-            'bot_typ_bot_id' => Yii::t('common', 'Bot Typ Bot ID'),
-            'bot_typ_can_id' => Yii::t('common', 'Bot Typ Can ID'),
-            'bot_cur_id' => Yii::t('common', 'Market currency'),
-            'bot_sleep' => Yii::t('common', 'Bot Sleep'),
-            'bot_wake_up' => Yii::t('common', 'Bot Wake Up'),
-            'bot_active' => Yii::t('common', 'Bot Active'),
-            'bot_process_id' => Yii::t('common', 'Bot Process ID'),
-            'bot_acc_id' => Yii::t('common', 'Bot Acc ID'),
+//            'bot_id' => Yii::t('common', 'Bot ID'),
+//            'bot_name' => Yii::t('common', 'Bot Name'),
+//            'bot_exc_id' => Yii::t('common', 'Bot Exc ID'),
+//            'bot_last_update' => Yii::t('common', 'Bot Last Update'),
+//            'bot_typ_bot_id' => Yii::t('common', 'Bot Typ Bot ID'),
+//            'bot_typ_can_id' => Yii::t('common', 'Bot Typ Can ID'),
+//            'bot_cur_id' => Yii::t('common', 'Market currency'),
+//            'bot_sleep' => Yii::t('common', 'Bot Sleep'),
+//            'bot_wake_up' => Yii::t('common', 'Bot Wake Up'),
+//            'bot_active' => Yii::t('common', 'Bot Active'),
+//            'bot_process_id' => Yii::t('common', 'Bot Process ID'),
+//            'bot_acc_id' => Yii::t('common', 'Bot Acc ID'),
         ];
     }
 
@@ -129,6 +130,14 @@ class Bot extends \yii\db\ActiveRecord
     public function getTypeCandlestick()
     {
         return $this->hasOne(TypeCandlestick::className(), ['typ_can_id' => 'bot_typ_can_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBotInstance()
+    {
+        return $this->hasMany(BotInstance::className(), ['bot_ins_bot_id' => 'bot_id']);
     }
 
     /**
