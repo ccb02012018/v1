@@ -46,8 +46,12 @@ class Logger
         error_log($message, 0);
     }
 
+    /**
+     * @param $exception \Exception
+     */
     public static function writeExceptionFileLog($exception)
     {
-        error_log('Error: ' . $exception->getMessage(), 0);
+        error_log('(' . $exception->getLine(). ') ' . $exception->getFile() . ' ' . $exception->getMessage(), 0);
+        error_log($exception->getTraceAsString(), 0);
     }
 }

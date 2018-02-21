@@ -19,13 +19,16 @@ use Yii;
  * @property string $can_low
  * @property string $can_close
  * @property int $can_close_time
- * @property int $can_volumen_int
- * @property int $can_volume_decimal
- * @property string $can_quote_asset_volume BTC volume
+ * @property int $can_volume
+ * @property double $can_quote_asset_volume BTC volume
  * @property int $can_number_trades
- * @property string $can_tb_base_asset_volume taker buy Cantidad
- * @property string $can_tb_quote_asset_volume Taker buy precio
+ * @property double $can_tb_base_asset_volume taker buy Cantidad
+ * @property double $can_tb_quote_asset_volume Taker buy precio
  * @property string $can_ignore algo
+ * @property string $can_previous_volume algo
+ * @property string $can_variation_volume algo
+ * @property string can_previous_price algo
+ * @property string can_variation_price algo
  *
  * @property Currency $canCur
  * @property Exchange $canExc
@@ -47,8 +50,8 @@ class Candlestick extends \yii\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['can_exc_id', 'can_cur_id', 'can_typ_can_id', 'can_open_time', 'can_open', 'can_high', 'can_low', 'can_close', 'can_close_time', 'can_volumen_int', 'can_volume_decimal', 'can_quote_asset_volume', 'can_number_trades', 'can_tb_base_asset_volume', 'can_tb_quote_asset_volume'], 'required'],
-			[['can_exc_id', 'can_cur_id', 'can_typ_can_id', 'can_open_time', 'can_close_time', 'can_volumen_int', 'can_volume_decimal', 'can_number_trades'], 'integer'],
+			[['can_exc_id', 'can_cur_id', 'can_typ_can_id', 'can_open_time', 'can_open', 'can_high', 'can_low', 'can_close', 'can_close_time', 'can_volume', 'can_quote_asset_volume', 'can_number_trades', 'can_tb_base_asset_volume', 'can_tb_quote_asset_volume'], 'required'],
+			[['can_exc_id', 'can_cur_id', 'can_typ_can_id', 'can_open_time', 'can_close_time', 'can_volume', 'can_number_trades'], 'integer'],
 			[['can_open', 'can_high', 'can_low', 'can_close', 'can_quote_asset_volume', 'can_tb_base_asset_volume', 'can_tb_quote_asset_volume', 'can_ignore'], 'number'],
 			[['can_cur_id'], 'exist', 'skipOnError' => true, 'targetClass' => Currency::className(), 'targetAttribute' => ['can_cur_id' => 'cur_id']],
 			[['can_exc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Exchange::className(), 'targetAttribute' => ['can_exc_id' => 'exc_id']],
@@ -72,8 +75,7 @@ class Candlestick extends \yii\db\ActiveRecord
 			'can_low' => Yii::t('app', 'Can Low'),
 			'can_close' => Yii::t('app', 'Can Close'),
 			'can_close_time' => Yii::t('app', 'Can Close Time'),
-			'can_volumen_int' => Yii::t('app', 'Can Volumen Int'),
-			'can_volume_decimal' => Yii::t('app', 'Can Volume Decimal'),
+			'can_volume' => Yii::t('app', 'Can Volumen Int'),
 			'can_quote_asset_volume' => Yii::t('app', 'BTC volume'),
 			'can_number_trades' => Yii::t('app', 'Can Number Trades'),
 			'can_tb_base_asset_volume' => Yii::t('app', 'taker buy Cantidad'),

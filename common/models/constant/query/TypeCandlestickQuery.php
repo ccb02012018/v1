@@ -31,4 +31,13 @@ class TypeCandlestickQuery extends \yii\db\ActiveQuery
     {
         return parent::one($db);
     }
+
+    /**
+     * @inheritdoc
+     * @return \common\models\constant\TypeCandlestick[]|array
+     */
+    public function biggerThan($milliseconds)
+    {
+        return parent::where("typ_can_milliseconds >= $milliseconds")->orderBy('typ_can_milliseconds ASC')->all();
+    }
 }

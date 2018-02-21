@@ -73,6 +73,11 @@ class ComposerStaticInit04c6cb10104ecff439cecee069311527
             'Codeception\\Extension\\' => 22,
             'Codeception\\' => 12,
         ),
+        'B' => 
+        array (
+            'Brick\\Math\\Tests\\' => 17,
+            'Brick\\Math\\' => 11,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -98,7 +103,7 @@ class ComposerStaticInit04c6cb10104ecff439cecee069311527
         ),
         'yii\\bootstrap\\' => 
         array (
-            0 => __DIR__ . '/..' . '/yiisoft/yii2-bootstrap',
+            0 => __DIR__ . '/..' . '/yiisoft/yii2-bootstrap/src',
         ),
         'yii\\' => 
         array (
@@ -186,6 +191,14 @@ class ComposerStaticInit04c6cb10104ecff439cecee069311527
         array (
             0 => __DIR__ . '/..' . '/codeception/base/src/Codeception',
             1 => __DIR__ . '/..' . '/codeception/stub/src',
+        ),
+        'Brick\\Math\\Tests\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/brick/math/tests',
+        ),
+        'Brick\\Math\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/brick/math/src',
         ),
     );
 

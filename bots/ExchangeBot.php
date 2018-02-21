@@ -8,96 +8,40 @@
 
 namespace bots;
 
-use common\models\utils\DateUtil;
-use services\BotService;
-use services\LogService;
+use bots\models\BotWorker;
 
-require_once(__DIR__ . '/Sync.php');
+require_once(__DIR__ . '/SyncBot.php');
 require_once(__DIR__ . '/services/BotService.php');
 require_once(__DIR__ . '/services/LogService.php');
 require_once(__DIR__ . '/../common/models/utils/DateUtil.php');
 require_once(__DIR__ . '/../common/models/ApiResult.php');
+require_once(__DIR__ . '/models/BotWorker.php');
 
-class ExchangeBot extends \Worker
+class ExchangeBot extends BotWorker
 {
-    /**
-     * @var int
-     */
-    private $bot_id;
-    /**
-     * @var int
-     */
-    private $bot_ins_id;
-    /**
-     * @var int
-     */
-    protected $exchange_id;
+    public $cont = 5;
 
-    /**
-     *
-     */
-    public function run()
+    private $syncBots = [];
+
+    public function doIt()
     {
         try {
-            //LogService::writeSimpleLog('Comienza Bot exchange');
-
-            $this->bot_id = BotService::waitingExchangeBot();
-
-            if ($this->bot_id == null) {
-                error_log('Sin bot exchange');
-                return;
-            }
-
-            $lastWakeUp = DateUtil::getLocalTime();
-            $startBtot = BotService::startBot($this->bot_id);
-            if ($startBtot == null) {
-                return;
-            }
-            $seconds = $startBtot['seconds'];
-            $this->bot_ins_id = $startBtot['bot_ins_id'];
-
-            if ($seconds == -1) {
-                error_log('Sin segundos');
-                return;
-            }
-
-            $sync = new Sync();
-
-            //TODO SE DEBE ELIMINAR, SOLO PARA PRUEBAS (CONTADOR $i)
-            $i = 0;
-            do {
-                while ($this->findSyncBot($sync)) {
-                    continue;
-                }
-
-                if (!BotService::esValido($this->bot_id, $this->bot_ins_id)) {
-                    break;
-                }
-
-                $lastWakeUp = BotService::wait($this->bot_id, $this->bot_ins_id, $lastWakeUp);
-                if ($lastWakeUp == null) {
-                    break;
-                }
-                $i++;
-            } while ($i < 2);
-        } catch (\Exception $e) {
-            error_log($e->getMessage());
-        } catch (\Throwable $e) {
-            error_log($e->getMessage());
+            return $this->findSyncBot();
+        } catch (\Exception $exception) {
+            error_log('Error: ' . $exception->getMessage());
+            return false;
         }
-
-        BotService::stop($this->bot_id, $this->bot_ins_id);
-
-        LogService::writeSimpleLog($this->bot_ins_id, 'Finaliza bot ' . $this->bot_id);
     }
 
-    private function findSyncBot(&$sync)
+    public function findSyncBot()
     {
-//        $syncBot = new SyncBot($this->exchange_id, $sync);
-//        if ($syncBot->isValidBot()) {
-//            $syncBot->start();
-//            return true;
-//        }
+        $syncBot = new SyncBot($this->exc_id);
+        if ($syncBot->isValidBot()) {
+            $syncBot->run();
+            error_log('prueba');
+            array_push($this->syncBots, $syncBot);
+            return true;
+        }
         return false;
     }
 

@@ -15,10 +15,11 @@ use Yii;
 class TypeBot extends \yii\db\ActiveRecord
 {
     const EXCHANGE = 1;
-    const SYNC = 1;
-    const VOLUME = 1;
-	const RESET = 2;
-	const CANDLE = 3;
+    const SYNC = 2;
+    const CANDLE = 3;
+    const CANDLES_GEN = 4;
+    const VARIATION = 5;
+    const RESET = 6;
 	/**
 	 * @inheritdoc
 	 */

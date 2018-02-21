@@ -26,6 +26,8 @@ use Yii;
  * @property boolean $bot_running
  * @property string $bot_process_id
  * @property int $bot_acc_id
+ * @property int $bot_bot_ins_id Instancia de bot actual
+ * @property int $bot_delay Segundos de delay para despertar
  *
  * @property Account $account
  * @property Currency $currency
@@ -33,6 +35,7 @@ use Yii;
  * @property TypeBot $typeBot
  * @property TypeCandlestick $typeCandlestick
  * @property BotInstance[] $botInstances
+ * @property BotInstance $botInstance
  */
 class Bot extends \yii\db\ActiveRecord
 {
@@ -60,7 +63,7 @@ class Bot extends \yii\db\ActiveRecord
     {
         return [
             [['bot_name', 'bot_exc_id', 'bot_typ_bot_id', 'bot_typ_can_id', 'bot_cur_id', 'bot_sleep', 'bot_active'], 'required'],
-            [['bot_exc_id', 'bot_last_update', 'bot_typ_bot_id', 'bot_typ_can_id', 'bot_cur_id', 'bot_wake_up', 'bot_acc_id'], 'integer'],
+            [['bot_exc_id', 'bot_last_update', 'bot_typ_bot_id', 'bot_typ_can_id', 'bot_cur_id', 'bot_wake_up', 'bot_acc_id', 'bot_bot_ins_id', 'bot_delay'], 'integer'],
             [['bot_active', 'bot_sleep', 'bot_running'], 'boolean'],
             [['bot_name', 'bot_process_id'], 'string', 'max' => 45],
             [['bot_acc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Account::className(), 'targetAttribute' => ['bot_acc_id' => 'acc_id']],
@@ -68,6 +71,7 @@ class Bot extends \yii\db\ActiveRecord
             [['bot_exc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Exchange::className(), 'targetAttribute' => ['bot_exc_id' => 'exc_id']],
             [['bot_typ_bot_id'], 'exist', 'skipOnError' => true, 'targetClass' => TypeBot::className(), 'targetAttribute' => ['bot_typ_bot_id' => 'typ_bot_id']],
             [['bot_typ_can_id'], 'exist', 'skipOnError' => true, 'targetClass' => TypeCandlestick::className(), 'targetAttribute' => ['bot_typ_can_id' => 'typ_can_id']],
+            [['bot_bot_ins_id'], 'exist', 'skipOnError' => true, 'targetClass' => BotInstance::className(), 'targetAttribute' => ['bot_bot_ins_id' => 'bot_ins_id']],
         ];
     }
 
@@ -135,9 +139,17 @@ class Bot extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getBotInstance()
+    public function getBotInstances()
     {
         return $this->hasMany(BotInstance::className(), ['bot_ins_bot_id' => 'bot_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBotInstance()
+    {
+        return $this->hasOne(BotInstance::className(), ['bot_ins_id' => 'bot_bot_ins_id']);
     }
 
     /**
